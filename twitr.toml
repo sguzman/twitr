@@ -1,0 +1,27 @@
+[chunking]
+max_chars = 280
+numbering = true
+numbering_format = "{current}/{total} "
+suffix = ""
+preserve_paragraphs = true
+preserve_line_breaks = false
+collapse_whitespace = true
+split_sentences = true
+paragraph_separator = "\n\n"
+
+[repl]
+prompt = "twitr> "
+done_command = "/done"
+clear_command = "/clear"
+help_command = "/help"
+quit_commands = ["/quit", "/exit"]
+show_stats_command = "/stats"
+
+[output]
+chunk_separator = "\n---\n"
+emit_trailing_newline = true
+
+[logging]
+filter = "twitr=trace,info"
+ansi = true
+with_target = false
