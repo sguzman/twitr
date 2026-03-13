@@ -1,0 +1,15 @@
+Twitr exists for one very specific reason: turning a wall of text into posts that are easy to send one after another without hand-editing every paragraph. That sounds simple until the input is messy, the sentences are uneven, and one paragraph is short while the next one sprawls over several lines. A decent chunker has to make practical choices.
+
+This sample file is intentionally long enough to force multiple chunks. It includes medium sentences, short sentences, and a few longer stretches so the splitting logic has something real to work with. If the output comes back as a single post, your configured limit is probably too high for testing.
+
+The first thing people usually try is pasting a draft thread straight from a notes app. That draft tends to have inconsistent spacing, random line breaks, and a paragraph that looked compact on a phone screen but turns out to be much longer when counted precisely. Software does not care how compact it looked. It only cares how many characters are actually there.
+
+Some writers want every chunk numbered. Others want plain text with no prefix at all because they prefer adding numbering manually on the platform itself. A useful tool should support both approaches without making either one awkward. It should also reserve room for the numbering before it starts slicing things up, otherwise the last-minute prefix pushes a chunk over the limit and makes the whole output unreliable.
+
+Here is a paragraph with a different rhythm. Short line. Slightly longer line. Then a sentence that keeps going just a bit further than you expect, mostly so the chunker has to decide whether to keep the surrounding text together or split at a more natural boundary before things become annoying to read.
+
+Another thing worth testing is how the program behaves when a paragraph is too large to fit intact. In that case it should keep the paragraph boundary when it can, but still fall back to sentence-level or word-level splitting when the paragraph itself is oversized. That behavior matters more than perfect elegance because the main job is to produce usable output quickly.
+
+You can also use this file to test logging. Run the program with a verbose `RUST_LOG` filter, point it at this sample, and watch the decisions it makes while normalizing text and producing chunks. If the logs are too noisy, the config gives you a central place to tone them down instead of changing code.
+
+Finally, there should be enough material here for a smoke test, a manual REPL comparison, and basic experimentation with config values like `max_chars`, numbering format, suffixes, and paragraph preservation. None of this prose is important, but it is long enough to be useful, which is the only thing a sample file really needs to be.
