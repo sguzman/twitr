@@ -12,4 +12,8 @@ Another thing worth testing is how the program behaves when a paragraph is too l
 
 You can also use this file to test logging. Run the program with a verbose `RUST_LOG` filter, point it at this sample, and watch the decisions it makes while normalizing text and producing chunks. If the logs are too noisy, the config gives you a central place to tone them down instead of changing code.
 
+---
+
+This section starts after a manual tweet boundary marker. Even if the previous chunk had spare capacity, an isolated line containing three dashes should force the next output tweet to begin here instead of being merged into the earlier text.
+
 Finally, there should be enough material here for a smoke test, a manual REPL comparison, and basic experimentation with config values like `max_chars`, numbering format, suffixes, and paragraph preservation. None of this prose is important, but it is long enough to be useful, which is the only thing a sample file really needs to be.

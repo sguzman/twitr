@@ -179,14 +179,19 @@ pub fn chunk_text(text: &str, config: &ChunkingConfig) -> Result<Vec<String>> {
         bail!("chunking.max_chars must be greater than zero");
     }
 
-    let normalized = normalize_text(text, config);
+    let sections = split_manual_sections(text)
+        .into_iter()
+        .map(|section| normalize_text(&section, config))
+        .filter(|section| !section.trim().is_empty())
+        .collect::<Vec<_>>();
+
     debug!(
         original_chars = text.chars().count(),
-        normalized_chars = normalized.chars().count(),
-        "normalized text for chunking"
+        section_count = sections.len(),
+        "prepared text for chunking"
     );
 
-    if normalized.trim().is_empty() {
+    if sections.is_empty() {
         return Ok(Vec::new());
     }
 
@@ -216,7 +221,10 @@ pub fn chunk_text(text: &str, config: &ChunkingConfig) -> Result<Vec<String>> {
             expected_total, "chunking with reserved numbering width"
         );
 
-        let bodies = chunk_bodies(&normalized, config, body_limit);
+        let bodies = sections
+            .iter()
+            .flat_map(|section| chunk_bodies(section, config, body_limit))
+            .collect::<Vec<_>>();
         let actual_total = bodies.len();
 
         if actual_total == expected_total {
@@ -240,6 +248,26 @@ pub fn chunk_text(text: &str, config: &ChunkingConfig) -> Result<Vec<String>> {
 
         expected_total = actual_total;
     }
+}
+
+fn split_manual_sections(text: &str) -> Vec<String> {
+    let normalized_newlines = text.replace("\r\n", "\n").replace('\r', "\n");
+    let mut sections = Vec::new();
+    let mut current = Vec::new();
+
+    for line in normalized_newlines.lines() {
+        if line.trim() == "---" {
+            trace!("encountered manual tweet boundary");
+            sections.push(current.join("\n"));
+            current.clear();
+            continue;
+        }
+
+        current.push(line);
+    }
+
+    sections.push(current.join("\n"));
+    sections
 }
 
 fn normalize_text(text: &str, config: &ChunkingConfig) -> String {
@@ -540,5 +568,31 @@ mod tests {
     fn default_config_path_points_to_repo_filename() {
         let path = default_config_path().unwrap();
         assert_eq!(path.file_name().unwrap(), "twitr.toml");
+    }
+
+    #[test]
+    fn isolated_marker_forces_a_new_chunk_boundary() {
+        let config = ChunkingConfig {
+            max_chars: 280,
+            numbering: false,
+            ..ChunkingConfig::default()
+        };
+
+        let chunks = chunk_text("first tweet\n---\nsecond tweet", &config).unwrap();
+
+        assert_eq!(chunks, vec!["first tweet", "second tweet"]);
+    }
+
+    #[test]
+    fn marker_with_surrounding_spaces_still_counts_as_manual_boundary() {
+        let config = ChunkingConfig {
+            max_chars: 280,
+            numbering: false,
+            ..ChunkingConfig::default()
+        };
+
+        let chunks = chunk_text("alpha\n  ---  \nbeta", &config).unwrap();
+
+        assert_eq!(chunks, vec!["alpha", "beta"]);
     }
 }

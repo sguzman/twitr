@@ -7,6 +7,7 @@
 - Chunks text under a configurable character limit.
 - Reserves space for optional `current/total` numbering.
 - Preserves paragraphs when possible and falls back to sentence, word, or hard token splitting.
+- Treats an isolated `---` line as a forced new tweet boundary.
 - Loads a comprehensive TOML config.
 - Emits detailed logs with `tracing`.
 - Includes unit tests for chunking behavior and config parsing.
@@ -48,6 +49,14 @@ Print the effective config:
 
 ```bash
 cargo run -- --print-config
+```
+
+Force a new tweet manually from a file or the REPL by putting `---` on its own line:
+
+```text
+This will be one tweet.
+---
+This starts a new tweet even if the first one had room left.
 ```
 
 ## Config
