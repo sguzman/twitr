@@ -1,96 +1,54 @@
 # twitr
 
-`twitr` chunks plain text into tweet-sized posts. It accepts input from a plain-text file or from an interactive REPL that works well with `rlwrap`.
+`twitr` chunks plain text into tweet-sized posts from either files or an interactive REPL workflow.
 
-## Features
+## Intent
 
-- Chunks text under a configurable character limit.
-- Reserves space for optional `current/total` numbering.
-- Preserves paragraphs when possible and falls back to sentence, word, or hard token splitting.
-- Treats an isolated `---` line as a forced new tweet boundary.
-- Loads a comprehensive TOML config.
-- Emits detailed logs with `tracing`.
-- Includes unit tests for chunking behavior and config parsing.
+Reduce the friction of turning longer writing into postable threaded chunks while staying in a simple terminal workflow.
 
-## Requirements
+## Ambition
 
-- Rust toolchain with Cargo.
-- Optional: `rlwrap` if you want command history in REPL mode.
+The REPL and docs suggest a practical authoring helper for social posting rather than a general social-media automation platform.
 
-## Usage
+## Current Status
 
-Chunk a file:
+The codebase is compact but complete enough to expose a library, binary, examples, config, and usage documentation.
 
-```bash
-cargo run -- input.txt
-```
+## Core Capabilities Or Focus Areas
 
-Use a custom config:
+- Chunk long text into tweet-sized segments.
+- Accept input from files or interactive sessions.
+- Use config-driven behavior.
+- Support example-driven experimentation.
+- Expose a small reusable Rust library alongside the CLI.
 
-```bash
-cargo run -- --config twitr.toml input.txt
-```
+## Project Layout
 
-Start the REPL:
+- `docs/`: project documentation, reference material, and roadmap notes.
+- `examples/`: sample inputs, example configs, or demonstration workflows.
+- `src/`: Rust source for the main crate or application entrypoint.
+- `Cargo.toml`: crate or workspace manifest and the first place to check for package structure.
 
-```bash
-rlwrap cargo run
-```
+## Setup And Requirements
 
-REPL commands:
+- Rust toolchain.
+- Text input to chunk.
+- Optional config via `twitr.toml`.
 
-- `/done`: chunk the current buffer and print the result
-- `/clear`: clear the current buffer
-- `/stats`: show the current buffer character count
-- `/help`: show commands
-- `/quit` or `/exit`: leave the REPL without printing chunks
-
-Print the effective config:
-
-```bash
-cargo run -- --print-config
-```
-
-Force a new tweet manually from a file or the REPL by putting `---` on its own line:
-
-```text
-This will be one tweet.
----
-This starts a new tweet even if the first one had room left.
-```
-
-## Config
-
-The repo includes a ready-to-edit config at [`twitr.toml`](/win/linux/Code/rust/twitr/twitr.toml).
-
-Important settings:
-
-- `chunking.max_chars`: hard per-post limit
-- `chunking.numbering`: prefix each chunk with sequence numbers
-- `chunking.numbering_format`: prefix template with `{current}` and `{total}`
-- `chunking.suffix`: static suffix appended to every chunk
-- `chunking.preserve_paragraphs`: keep paragraphs together when possible
-- `chunking.preserve_line_breaks`: preserve single line breaks instead of normalizing them
-- `chunking.collapse_whitespace`: condense repeated spaces
-- `chunking.split_sentences`: prefer sentence-aware chunking before word fallback
-- `logging.filter`: default `tracing` filter, overridden by `RUST_LOG`
-
-## Development
-
-Run tests:
-
-```bash
-cargo test
-```
-
-Verify the build:
+## Build / Run / Test Commands
 
 ```bash
 cargo build
+cargo test
+cargo run -- --help
 ```
 
-Format:
+## Notes, Limitations, Or Known Gaps
 
-```bash
-cargo fmt
-```
+- This tool is about text segmentation, not posting or account automation.
+- Good chunking behavior depends on content style as much as raw character count.
+
+## Next Steps Or Roadmap Hints
+
+- Add more regression examples for difficult prose shapes.
+- Clarify how the project should handle URLs, hashtags, and thread-specific formatting edge cases.
